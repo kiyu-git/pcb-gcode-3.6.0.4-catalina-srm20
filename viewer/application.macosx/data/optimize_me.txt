@@ -1,4 +1,4 @@
-# board=.../001_v3_CVC_from_module2.bot.mill.tap
+# board=.../001_v3_CVC_from_module2.bot.mill.nc
 # depth=-1.650000
 # pass=1
 # preview window width=800 height=600
