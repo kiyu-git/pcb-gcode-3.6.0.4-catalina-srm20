@@ -1,29 +1,29 @@
 import processing.core.*; 
-import processing.xml.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
 
-import java.applet.*; 
-import java.awt.*; 
-import java.awt.image.*; 
-import java.awt.event.*; 
-import java.io.*; 
-import java.net.*; 
-import java.text.*; 
-import java.util.*; 
-import java.util.zip.*; 
-import java.util.regex.*; 
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
 
 public class viewer extends PApplet {
 
 /**
  * viewer
- * 
+ *
  * Copyright 2013 by John Johnson Software, LLC
  * All Rights Reserved
  *
  * Load line coordinates from a file and draw them.
  *
  */
- 
+
 String m_viewer_version = "Viewer 1.6";
 
 /*
@@ -112,7 +112,7 @@ float maxy = 0;
 
 PFont metaBold;
 
-String filename = "optimize_me.txt";
+String filename = "./data/optimize_me.txt";
 
 String comment = "";
 float tool_size = 0.001f;
@@ -124,8 +124,8 @@ int m_pass;
 int total_passes;
 boolean m_monochrome = false;
 
-int m_window_width = 800;
-int m_window_height = 600;
+//int m_window_width = 800;
+//int m_window_height = 600;
 int m_window_x = 0;
 int m_window_y = 0;
 
@@ -213,12 +213,12 @@ public void rtext(String s, float x, float y) {
 }
 
 public void resize_window() {
-  m_window_x = (screen.width - m_window_width) / 2;
-  m_window_y = (screen.height = m_window_height) / 4; // screen.height seems broken on Mac OS returning 600 for 900 high screen
-  size(m_window_width, m_window_height);
-  frame.setLocation(m_window_x, m_window_y);
-  
-/*  
+  //m_window_x = (displayWidth - m_window_width) / 2;
+  //m_window_y = (displayHeight = m_window_height) / 4; // screen.height seems broken on Mac OS returning 600 for 900 high screen
+  //size(m_window_width, m_window_height);
+  //frame.setLocation(m_window_x, m_window_y);
+
+/*
   println("screen.width = " + nfs(screen.width, 5));
   println("m_window_x = " + nfs(m_window_x, 5));
   println("m_window_width = " + nfs(m_window_width, 5));
@@ -236,6 +236,7 @@ public void resize_window() {
  */
 public void setup() {
   String matches[];
+  // fixed window size
   
   String line = null;
   String[] lines = new String[1];
@@ -283,7 +284,7 @@ public void setup() {
           a.eang += 180;
           //println("bottom arc");
         }
-        
+
         //
         // Otherwise, arc is on top of board
         // (The code in the else statement below is about 3 hours work. Just sayin.)
@@ -300,25 +301,25 @@ public void setup() {
         //println("made an arc " + line);
       }
       matches = match(line, "^# preview window width=([0-9]+) height=([0-9]+)");
-      if (matches != null) {
-        m_window_width = PApplet.parseInt(matches[1]);
-        m_window_height = PApplet.parseInt(matches[2]);
-        size(m_window_width, m_window_height);
-        //println("window size set to (" + nf(m_window_width, 5) + ", " + nf(m_window_height, 5) + ")");
-      }
+      //if (matches != null) {
+      //  m_window_width = int(matches[1]);
+      //  m_window_height = int(matches[2]);
+      //  size(m_window_width, m_window_height);
+      //  //println("window size set to (" + nf(m_window_width, 5) + ", " + nf(m_window_height, 5) + ")");
+      //}
 
       matches = match(line, "^# debug");
       if (matches != null) {
         println(line);
       }
-      // the catch-all case, 
+      // the catch-all case,
       // if the line doesn't begin with a #, assume it is a line segment
       matches = match(line, "^#");
       if (matches == null) {
         lines = (String[])append(lines, (line + "," + nf(m_pass,2)));
       }
     }
-  } 
+  }
   while (line != null);
   plines = (Line[])expand(plines, lines.length);
   prepare_objects(lines, arcs);
@@ -337,9 +338,9 @@ public void draw_line(Line l) {
     }
     line(l.sx * x_scale + x_offset, l.sy * y_scale + y_offset,
     l.ex * x_scale + x_offset, l.ey * y_scale + y_offset);
-    //println(nfs(l.sx, 1, 5) +", " + nfs(l.sy, 1, 5));      
-    //print(nfs(l.sx * x_scale + x_offset, 1, 5) +", " + nfs(l.sy * y_scale + y_offset, 1, 5) + ", ");      
-    //println(nfs(l.ex * x_scale + x_offset, 1, 5) +", " + nfs(l.ey * y_scale + y_offset, 1, 5));      
+    //println(nfs(l.sx, 1, 5) +", " + nfs(l.sy, 1, 5));
+    //print(nfs(l.sx * x_scale + x_offset, 1, 5) +", " + nfs(l.sy * y_scale + y_offset, 1, 5) + ", ");
+    //println(nfs(l.ex * x_scale + x_offset, 1, 5) +", " + nfs(l.ey * y_scale + y_offset, 1, 5));
   }
   else {
     println("null line");
@@ -399,14 +400,14 @@ public void ornaments() {
 
   text(nfs(minx, 1, 3) + ", " + nfs(miny, 1, 3), xso(minx) + 5, yso(miny) + 12);
 
-  // lower-right 
+  // lower-right
   line(xso(maxx), yso(miny) - 10, xso(maxx), yso(miny));
   line(xso(maxx), yso(miny), xso(maxx) - 10, yso(miny));
 
   // upper-right
   line(xso(maxx) - 10, yso(maxy), xso(maxx), yso(maxy));
   line(xso(maxx), yso(maxy), xso(maxx), yso(maxy) + 10);
-  rtext(nfs(maxx, 1, 3) + ", " + nfs(maxy, 1, 3), xso(maxx), yso(maxy) - 5);  
+  rtext(nfs(maxx, 1, 3) + ", " + nfs(maxy, 1, 3), xso(maxx), yso(maxy) - 5);
 
   // upper-left corner
   line(xso(minx) + 10, yso(maxy), xso(minx), yso(maxy));
@@ -418,7 +419,7 @@ public void ornaments() {
   noFill();
   ellipse(xso(0), yso(0), 10, 10);
 
-  // comment from the file  
+  // comment from the file
   stroke(255);
   text(comment, 10, 20);
 
@@ -450,16 +451,16 @@ public void draw() {
   fill(bg_color);
   strokeWeight(4);
 
-  if (m_need_resize) {  
+  if (m_need_resize) {
     resize_window();
     m_need_resize = false;
   }
-  
+
   quad(0, 0, width-1, 0, width-1, height-1, 0, height-1);
   strokeWeight(1);
-  
+
   fill(255, 0, 0);
-  metaBold = loadFont("BankGothic-Light-14.vlw");
+  metaBold = loadFont("./data/BankGothic-Light-14.vlw");
   textFont(metaBold);
   rtext(m_viewer_version, width - 20, 20);
 
@@ -576,7 +577,7 @@ public void keyPressed() {
   case 's':
     m_trans_y -= width / 80;
     break;
-    
+
     /*
      * Move using the arrow keys.
      *
@@ -599,12 +600,15 @@ public void keyPressed() {
     break;
   }
   background(bg_color);
-  redraw();  
+  redraw();
 }
-
-
-
-  static public void main(String args[]) {
-    PApplet.main(new String[] { "--bgcolor=#ffffff", "viewer" });
+  public void settings() {  size(800, 600); }
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "viewer" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
   }
 }

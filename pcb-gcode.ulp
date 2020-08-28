@@ -44,7 +44,7 @@
        "Where:\n"
        "<table>"
        "<tr><td><em>Option</em></td><td><em>Function</em></td></tr>"
-			 "<tr><td><code>--help</code></td><td>Show this help screen</td></tr>"			 
+			 "<tr><td><code>--help</code></td><td>Show this help screen</td></tr>"
 			 "<tr><td><code>--setup</code></td><td>Run the setup / configuration program</td></tr>"
        "<tr><td><code>file</code></td><td>Is the optional root filename.\n</td></tr>"
        "<tr><td></td><td>If not given, the board name is used as the root filename.</td></tr>"
@@ -52,7 +52,7 @@
 			 "</td></tr>"
        "</table>"
 			 "<hr>"
-     
+
 g_tool_size = TOOL_SIZE;
 
 // Filename to output to.
@@ -83,7 +83,7 @@ string g_cmd_temp;
 
 real m_v_x[], m_v_y[], m_v_rad[];
 real m_tool_x, m_tool_y, m_vx1, m_vy1, m_vx2, m_vy2, m_rad;
-int m_v_index[], m_v_prev[], m_v_next[], m_v_step[], m_v_cont[], m_v_curve[], m_c_start[], m_c_end[]; 
+int m_v_index[], m_v_prev[], m_v_next[], m_v_step[], m_v_cont[], m_v_curve[], m_c_start[], m_c_end[];
 int m_contours, m_cw, m_v_n=1, m_fwd, m_dist, m_dist_min, m_dist_min_index;
 int m_wire_start, m_z_up, m_step, m_i, m_j, m_cont, m_border_contour;
 
@@ -120,7 +120,7 @@ void preview()
   if (SHOW_PREVIEW) {
     switch(get_os()) {
       case OS_MACOSX:
-      system(g_path + "/viewer/application.macosx/viewer.app/Contents/MacOS/JavaApplicationStub");
+      system(g_path + "/viewer/application.macosx/viewer.app/Contents/MacOS/viewer");
       break;
       case OS_LINUX:
       system(g_path + "/source/viewer.linux.sh");
@@ -213,12 +213,12 @@ real distance(real x1, real y1, real x2, real y2) {
   return (sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)));
 }
 
-// 
+//
 // Sorts a stack of drills in g_stack by distance from last hole.
 //
 // Params: none
 // Return: none
-// Changes: 
+// Changes:
 //  the stack
 //
 void pythagorean_sort() {
@@ -237,7 +237,7 @@ void pythagorean_sort() {
   string drill_args2[];
   string drill_args3[];
   string tmp;
-  
+
   real before_distance;
   real after_distance;
 
@@ -249,7 +249,7 @@ void pythagorean_sort() {
 		drill_size1 = internals_to_user(my_strtol(drill_args1[DRILL_SIZE]));
 		drill_x1 = scale_x(my_strtol(drill_args1[DRILL_X]));
 		drill_y1 = scale_y(my_strtol(drill_args1[DRILL_Y]));
-		
+
 		j = i + 2;
     while (j <= stack_count()) {
   		strsplit(drill_args2, stack_elem(i+1), '\t');
@@ -260,7 +260,7 @@ void pythagorean_sort() {
   		strsplit(drill_args3, stack_elem(j), '\t');
   		drill_size3 = internals_to_user(my_strtol(drill_args3[DRILL_SIZE]));
   		drill_x3 = scale_x(my_strtol(drill_args3[DRILL_X]));
-  		drill_y3 = scale_y(my_strtol(drill_args3[DRILL_Y]));    
+  		drill_y3 = scale_y(my_strtol(drill_args3[DRILL_Y]));
 
       if (drill_size2 != drill_size1 || drill_size3 != drill_size1)
         break;
@@ -316,7 +316,7 @@ void drill(int which_side)
 				}
 			}
 			E.package.holes(H) add_hole(H.drill, H.x, H.y);
-		} 
+		}
 		// B.elements
 
 		// Sorts the drills by size, then distance from previous hole.
@@ -346,16 +346,16 @@ void drill(int which_side)
 					++m_current_tool;
 					drill_tool_num = get_tool_num_for(my_strtol(drill_args[DRILL_SIZE]), m_current_tool);
 					out(TOOL_CHANGE_TABLE_FORMAT(drill_tool_num,
-					drill_size_mm, drill_size_inch, 
-					g_mins[drill_tool_num], g_maxs[drill_tool_num], 
+					drill_size_mm, drill_size_inch,
+					g_mins[drill_tool_num], g_maxs[drill_tool_num],
 					g_drill_sub_cnt[drill_tool_num]));
 				}
 				last_size = drill_size;
-			} 
+			}
 			// for
 
 			begin_gcode(SPINDLE_DRILL_RPM);
-			
+
 			//
 			// Generate drill code.
 			//
@@ -385,7 +385,7 @@ void drill(int which_side)
 					rxy(TOOL_CHANGE_POS_X, TOOL_CHANGE_POS_Y);
 					out(fir(TOOL_CHANGE, get_tool_num_for(my_strtol(drill_args[DRILL_SIZE]), m_current_tool), drill_size));
 					output_tool_changed();
-					
+
 					// Output zero steps and a pause
 					if (DO_TOOL_CHANGE_WITH_ZERO_STEP == YES) {
 						output_tool_zero_begin();
@@ -400,9 +400,9 @@ void drill(int which_side)
 
 					output_drill_first_hole(drill_x, drill_y, DRILL_DEPTH);
 					last_size = drill_size;
-				} 
+				}
 				// if drill_size != last_size
-			} 
+			}
 			// for
 
 			output_file_postamble();
@@ -411,11 +411,11 @@ void drill(int which_side)
 			// change back to tool 1
 			out(fi(TOOL_CODE + EOL, 1));
 			end_gcode();
-		} 
+		}
 		// output
-	} 
+	}
 	// Board
-} 
+}
 // drill
 
 // holds line segments generated for the previewer
@@ -447,7 +447,7 @@ string coords(real x1, real y1, real x2, real y2)
 //  drill_size Size of the hole to drill.
 //  x, y  Location of the hole.
 // Return: none
-// Changes: 
+// Changes:
 //  m_first_spot_drill
 //  m_lines
 //  g_side
@@ -458,7 +458,7 @@ void spot_drill_hole(int drill_size, int x, int y)
 	real drill_x;
 	real drill_y;
   real offset;
-  
+
 	drill_x = scale_x(x);
 	drill_y = scale_y(y);
 	save_extents(drill_x, drill_y);
@@ -472,9 +472,9 @@ void spot_drill_hole(int drill_size, int x, int y)
       output_drill_hole(drill_x, drill_y, SPOT_DRILL_DEPTH);
     }
   }
-	
+
 	offset = internals_to_user(get_drill_for(drill_size)) / 2;
-  
+
   //
   // Generate X's for drill preview if drills are turned on for this side.
   //
@@ -491,14 +491,14 @@ void spot_drill_hole(int drill_size, int x, int y)
 // Params:
 //  B The board.
 // Return: none
-// Changes: 
+// Changes:
 //  m_lines
 //
 void spot_drill(UL_BOARD B)
 {
 
   m_lines += "# spot drills\n";
-  
+
 	B.holes(H) spot_drill_hole(H.drill, H.x, H.y);
 	B.signals(S) S.vias(V) spot_drill_hole(V.drill, V.x, V.y);
 	B.elements(E) {
@@ -508,7 +508,7 @@ void spot_drill(UL_BOARD B)
 			}
 		}
 		E.package.holes(H) spot_drill_hole(H.drill, H.x, H.y);
-	} 
+	}
 	// B.elements
 }
 
@@ -538,9 +538,9 @@ int MAX_COORDS_PER_LINE = 4;
 void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radius, real fr_xy, real fr_z)
 {
 	real rx1, ry1, rx2, ry2;
-	
+
 	string str;
-	
+
 	rx1 = scale_x(x1);
 	ry1 = scale_y(y1);
 	rx2 = scale_x(x2);
@@ -628,11 +628,11 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radiu
 			real cy = ry2;
 			real end_x = rx1;
 			real end_y = ry1;
-			
+
 			rz(DEFAULT_Z_UP);
 			rxy(end_x, end_y);
 			fzr(z_down_or_radius, FEED_RATE_MILL_Z);
-			
+
 			if (g_side == TOP || MIRROR_BOTTOM == YES) {
         			out(frrrr(ARC_CLOCK, m_arc_begin_x, m_arc_begin_y, m_arc_radius, fr_xy));
       		}
@@ -718,9 +718,9 @@ void generate_outlines(int which_side)
 		);
 		g_cmd = g_cmd + cmd_temp;
 		return;
-	} 
+	}
 	// board(B)
-} 
+}
 // generate_outlines
 
 //
@@ -828,21 +828,21 @@ void output_text_code()
 							old_y = W.y2;
 							save_extents(W.x1, W.y1);
 							save_extents(W.x2, W.y2);
-						} 
-						// if (W.arc) 
-					} 
+						}
+						// if (W.arc)
+					}
 					// if (W.layer == TEXT_LAYER)
 				}
 				// if (top and bottom check)
-			} 
+			}
 			// T.wires
 			output_file_postamble();
 			end_gcode();
 			user_file_closing();
-		} 
+		}
 		// output
 		user_file_closed(get_filename(), FILEMODE_WRITE_TEXT);
-	} 
+	}
 	// board
 	g_tool_size = abs(TEXT_DEPTH);
 	output_preview_data(FILEMODE_WRITE_TEXT, TEXT);
@@ -934,13 +934,13 @@ void output_mill_code()
 
 					// if this is an arc, it is treated specially.
 					if (P.arc) {
-					  sprintf(str, "# arc xc=%f yc=%f sang=%f eang=%f radius=%f\n", 
+					  sprintf(str, "# arc xc=%f yc=%f sang=%f eang=%f radius=%f\n",
 					    scale_x(P.arc.xc), scale_y(P.arc.yc), P.arc.angle1, P.arc.angle2, scale_x(P.arc.radius));
 					  m_lines += str;
-					  sprintf(str, "# debug     W.x1=%8.5f     W.y1=%8.5f     W.x2=%8.5f     W.y2=%8.5f W.curve=%f\n", 
+					  sprintf(str, "# debug     W.x1=%8.5f     W.y1=%8.5f     W.x2=%8.5f     W.y2=%8.5f W.curve=%f\n",
 					    scale_x(W.x1), scale_y(W.y1), scale_x(W.x2), scale_y(W.y2), W.curve);
 					  m_lines += str;
-					  sprintf(str, "# debug P.arc.x1=%8.5f P.arc.y1=%8.5f P.arc.x2=%8.5f P.arc.y2=%8.5f\n", 
+					  sprintf(str, "# debug P.arc.x1=%8.5f P.arc.y1=%8.5f P.arc.x2=%8.5f P.arc.y2=%8.5f\n",
 					    scale_x(P.arc.x1), scale_y(P.arc.y1), scale_x(P.arc.x2), scale_y(P.arc.y2));
 					  m_lines += str;
 					  m_lines += "# debug\n";
@@ -1006,11 +1006,11 @@ void output_mill_code()
 						old_y = P.y2;
 						save_extents(P.x1, P.y1);
 						save_extents(P.x2, P.y2);
-					} 
+					}
 					// if (P.arc)
-				} 
+				}
 				// if (P.layer == MILL_LAYER)
-			} 
+			}
 			// pieces
 
 ////////// mlmSolutions added 5 Feb 14 yyyy
@@ -1044,7 +1044,7 @@ void output_mill_code()
 
 				//move the tool position to new location
 				m_tool_x = (m_v_x[m_i]);
-				m_tool_y = (m_v_y[m_i]); 
+				m_tool_y = (m_v_y[m_i]);
 			}
 
 			// Generate the gcode
@@ -1060,7 +1060,7 @@ void output_mill_code()
 				} else {	//generate the gcode
 					m_vx2 = m_v_x[m_j]; 	m_vy2 = m_v_y[m_j];	//get the destination vertex
 					if (((m_vx1 == m_tool_x) && (m_vy1 == m_tool_y)) && !first_run) {	//is it a continuation of the line
-						state = ST_CONTINUE_LINE; 
+						state = ST_CONTINUE_LINE;
 						m_z_up = false;	//only needed as device_draw for arcs doesn't currently have a way of know if to continue
 					} else {
 						state = ST_START_LINE;
@@ -1083,16 +1083,16 @@ void output_mill_code()
 			output_file_postamble();
 			end_gcode();
 			user_file_closing();
-		} 
+		}
 		// output
 		user_file_closed(get_filename(), FILEMODE_WRITE_TEXT);
-	} 
+	}
 	// board
 
 	g_tool_size = abs(MILLING_DEPTH);
 	output_preview_data(FILEMODE_WRITE_TEXT, MILL);
 	preview();
-	
+
 	m_lines = "";
 }
 // output_mill_code
@@ -1176,7 +1176,7 @@ void write_outlines(int which_side, int task)
 			output_text_code();
 			return;
 		}
-	} 
+	}
 	// if m_layer == MILL_LAYER
 
 	output(get_filename(), mode) {
@@ -1258,7 +1258,7 @@ void write_outlines(int which_side, int task)
 									m_border_contour = m_contours;
 								}
 //////////
-							} 
+							}
 							// P.contours(W)
 							break;
 
@@ -1267,7 +1267,7 @@ void write_outlines(int which_side, int task)
 								device_draw(W.x1, W.y1, W.x2, W.y2, ST_START_LINE, DEFAULT_Z_DOWN, fr_xy, fr_z);
 							}
 							break;
-						} 
+						}
 						// switch(task)
 
 
@@ -1332,10 +1332,10 @@ void write_outlines(int which_side, int task)
 							m_v_step[m_v_n] = ++m_step;
 							m_v_cont[m_v_n] = m_v_cont[m_i];
 							++m_v_n;
-									
+
 							//move the tool position to new location
 							m_tool_x = (m_v_x[m_dist_min_index]);
-							m_tool_y = (m_v_y[m_dist_min_index]); 
+							m_tool_y = (m_v_y[m_dist_min_index]);
 						}
 
 
@@ -1345,7 +1345,7 @@ void write_outlines(int which_side, int task)
 						// 2) otherwise just proceed.
 
 						sort(m_v_n, m_v_index, m_v_step); // sort into step order
-						
+
 						for (m_j = 0; m_v_step[m_v_index[m_j]] == 0; ++m_j);	// find the first non zero step
 
 						m_cont=0;
@@ -1384,21 +1384,21 @@ void write_outlines(int which_side, int task)
 						sprintf(g_cmd, "delete (%f %f) (%f %f);\n",
 						internals_to_user(x1), internals_to_user(y1), internals_to_user(x2), internals_to_user(y2)
 						);
-					} 
+					}
 					// polygons
-				} 
+				}
 				// if(S.name == OUTLINES_SIGNAL_NAME)
-			} 
+			}
 			// signals
-		} 
+		}
 		// board
 		user_file_closing();
-	} 
+	}
 	// output
 	user_file_closed(get_filename(), mode);
 	output_preview_data(mode, g_side);
 
-} 
+}
 // write_outlines
 
 //
@@ -1416,7 +1416,7 @@ void write_stencil(int which_side, string suffix)
   real fr_z;
   fr_xy = FEED_RATE_STENCIL_XY;
   fr_z = FEED_RATE_STENCIL_Z;
-  
+
 	g_side = which_side;
 	switch (which_side) {
 		case TOP:
@@ -1447,7 +1447,7 @@ void write_stencil(int which_side, string suffix)
 			B.elements(E) {
 				E.package.contacts(C) {
 					if (C.smd &&
-					    ((C.smd.layer == LAYER_BOTTOM && m_layer == BOTTOM_CREAM_LAYER) || 
+					    ((C.smd.layer == LAYER_BOTTOM && m_layer == BOTTOM_CREAM_LAYER) ||
 					    (C.smd.layer == LAYER_TOP && m_layer == TOP_CREAM_LAYER))) {
 						int cx = C.smd.x, cy = C.smd.y;
 						int dx = C.smd.dx[m_layer], dy = C.smd.dy[m_layer];
@@ -1499,10 +1499,10 @@ void write_stencil(int which_side, string suffix)
 	}
 	// output
 	user_file_closed(get_filename(), "wt");
-	
+
 	output_preview_data(FILEMODE_WRITE_TEXT, STENCIL);
 	preview();
-	
+
 } // write_stencil
 
 /* string get_phase_name(int phase)
@@ -1516,7 +1516,7 @@ void gen_progress_menu(int phase)
 		printf("MENU \\\n");
 		for(int i = 1; i < PH_LAST_PHASE; i++) {
 			if (i == phase) {
-				printf("--%s-- \\\n", get_phase_name(i));     
+				printf("--%s-- \\\n", get_phase_name(i));
 				// " (for TextMate)
 			}
 			else {
@@ -1554,12 +1554,12 @@ if (argv[FILENAME_ARG] == "--attr") {
 if (argv[FILENAME_ARG] == "--help") {
 	int choice = dlgMessageBox(usage, "+Return to Eagle", "Run Setup Now");
 	switch (choice) {
-		
+
 		// return to eagle
 		case 0:
 			exit(0);
 			break;
-		
+
 		// Run setup now
 		case 1:
 			exit("run pcb-gcode-setup");
