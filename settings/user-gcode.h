@@ -16,7 +16,10 @@
 string FILE_BEGIN[] = { "", "", "", "" };
 string FILE_END[]   = { "", "", "", "" };
 
-FILE_BEGIN[ALL]    = "(Beginning of every file)\n";
+FILE_BEGIN[ALL]    = "(Beginning of every file)\n"
+                     "%% \n"
+                     "G54\n";
+
 FILE_END[ALL]      = "(End of every file)\n";
 
 FILE_BEGIN[BOTTOM] = "(Beginning of every bottom file)\n";
@@ -148,10 +151,10 @@ THIS_ISNT_USED[BOTTOM] = "G20\n"
  * The functions below should make it easier for folks outputing their own code, etc.
  *
  */
- 
+
 /*
  * Called after the gcode file has been opened.
- * Mode can be 
+ * Mode can be
  * "wt" (write a text file) when the file is first opened.
  * "at" (append a text file) if the file is added to.
  *
